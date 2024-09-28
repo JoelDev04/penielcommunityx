@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "121860213510",
+    "firebase_url": "https://demoproject-fdf87-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "demoproject-fdf87",
+    "storage_bucket": "demoproject-fdf87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121860213510:android:ea3032152c723db7792c87",
+        "android_client_info": {
+          "package_name": "id.jostudios.penielcommunityx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFP3VFcU-iwxSyAFfie3BXlraCqxOn2J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
