@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import id.jostudios.penielcommunityx.common.PermissionManager
+import id.jostudios.penielcommunityx.common.States
 import id.jostudios.penielcommunityx.domain.enums.PermissionsEnum
 import id.jostudios.penielcommunityx.presentation.MemberDetailsActivity
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.ErrorDialog
@@ -71,11 +72,7 @@ fun MembersActivity(
 
             if (PermissionManager.checkPermission(PermissionsEnum.AddMembers)) {
                 Icon(Icons.Default.Add, contentDescription = "Add Member", modifier = Modifier.clickable {
-                    if (PermissionManager.checkPermission(PermissionsEnum.AddMembers)) {
-                        Toast.makeText(context, "Proceeding!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "You're not allowed!", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(context, "Proceeding!", Toast.LENGTH_SHORT).show();
                 });
             }
         }

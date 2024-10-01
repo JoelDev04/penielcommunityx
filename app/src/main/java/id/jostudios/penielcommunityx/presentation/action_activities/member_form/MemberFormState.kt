@@ -6,9 +6,9 @@ import id.jostudios.penielcommunityx.domain.model.UserModel
 data class MemberFormState(
     val currentUser: UserModel? = null,
     val error: String? = null,
+
     val displayName: String? = null,
     val email: String? = null,
     val phoneNumber: String? = null,
-    val birthDate: Long? = null,
-    val role: RolesEnum? = null
+    val birthDate: Long? = null
 );

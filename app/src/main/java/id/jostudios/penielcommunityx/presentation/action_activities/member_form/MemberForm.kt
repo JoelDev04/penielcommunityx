@@ -132,7 +132,7 @@ class MemberForm : ComponentActivity() {
                     Spacer(modifier = Modifier.width(10.dp));
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = currentUser.displayName,
+                        value = state.displayName!!,
                         onValueChange = {
                             viewModel.setDisplayName(it);
                             state.displayName
@@ -156,7 +156,7 @@ class MemberForm : ComponentActivity() {
                     Spacer(modifier = Modifier.width(10.dp));
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = currentUser.email,
+                        value = state.email!!,
                         onValueChange = {
                             viewModel.setEmail(it);
                         },
@@ -179,7 +179,7 @@ class MemberForm : ComponentActivity() {
                     Spacer(modifier = Modifier.width(10.dp));
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = currentUser.phoneNumber,
+                        value = state.phoneNumber!!,
                         onValueChange = {
                             viewModel.setPhoneNumber(it);
                         },
@@ -238,6 +238,7 @@ class MemberForm : ComponentActivity() {
                     .fillMaxWidth()
             ) {
                 Toast.makeText(context, "Saving changes", Toast.LENGTH_SHORT).show();
+                viewModel.updateDetails();
             }
         }
     }

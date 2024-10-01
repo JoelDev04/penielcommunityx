@@ -100,17 +100,19 @@ fun DetailsActivity(
                 modifier = Modifier.padding(15.dp)
             ) {
                 val context = LocalContext.current;
-
-                Icon(Icons.Default.Create, contentDescription = "Edit Member", tint = Color.White, modifier = Modifier.clickable {
-                    if (PermissionManager.checkPermission(PermissionsEnum.EditMembers)) {
-                        Toast.makeText(context, "Edit Member", Toast.LENGTH_SHORT).show();
-                        val targetIntent = Intent(context, MemberForm::class.java);
-                        targetIntent.putExtra("uid", state.value.userModel?.id);
-                        context.startActivity(targetIntent);
-                    } else {
-                        Toast.makeText(context, "You're not allowed!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (PermissionManager.checkPermission(PermissionsEnum.EditMembers)) {
+                    Icon(
+                        Icons.Default.Create,
+                        contentDescription = "Edit Member",
+                        tint = Color.White,
+                        modifier = Modifier.clickable {
+                            Toast.makeText(context, "Edit Member", Toast.LENGTH_SHORT).show();
+                            val targetIntent = Intent(context, MemberForm::class.java);
+                            targetIntent.putExtra("uid", state.value.userModel?.id);
+                            context.startActivity(targetIntent);
+                        }
+                    );
+                }
             }
         }
         Column(modifier = Modifier

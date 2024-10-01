@@ -1,9 +1,6 @@
 package id.jostudios.penielcommunityx.common
 
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import id.jostudios.penielcommunityx.common.States.permissions
 import id.jostudios.penielcommunityx.domain.enums.PermissionsEnum
 
 object PermissionManager {

@@ -33,6 +33,11 @@ class MemberFormViewModel @Inject constructor(
                         currentUser = States.currentUser.value
                     );
 
+                    setDisplayName(_state.value.currentUser?.displayName!!);
+                    setEmail(_state.value.currentUser?.email!!);
+                    setPhoneNumber(_state.value.currentUser?.phoneNumber!!);
+                    setBirthDate(_state.value.currentUser?.birthDate!!);
+
                 } else {
                     Log.d("MemberForm", "Loading Other User!");
                     val user = dbRepo.getUserById(uid);
@@ -79,16 +84,13 @@ class MemberFormViewModel @Inject constructor(
                 // Save non-null values!
 
                 if (_state.value.displayName != null)
-                    dbRepo.updateDisplayName(_uid, _state.value.phoneNumber!!);
+                    dbRepo.updateDisplayName(_uid, _state.value.displayName!!);
 
                 if (_state.value.phoneNumber != null)
                     dbRepo.updatePhoneNumber(_uid, _state.value.phoneNumber!!);
 
                 if (_state.value.email != null)
                     dbRepo.updateEmail(_uid, _state.value.email!!);
-
-                if (_state.value.role != null)
-                    dbRepo.updateRole(_uid, _state.value.role!!);
 
                 if (_state.value.birthDate != null)
                     dbRepo.updateBirthDate(_uid, _state.value.birthDate!!);

@@ -22,6 +22,7 @@ import id.jostudios.penielcommunityx.domain.use_case.get_version.GetVersionUseCa
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 import javax.inject.Inject
 
 @HiltViewModel
@@ -149,6 +150,9 @@ class HomeViewModel @Inject constructor(
                 States.permissions.value = user.permissions;
                 user.permissions = "0";
                 States.currentUser.value = user;
+
+                Log.d("HomeViewModel", "State Perms : ${States.permissions.value}");
+                Log.d("HomeViewModel", "User Perms : ${user.permissions}");
 
                 fetchUserProfilePicture();
                 listener(user.id);
