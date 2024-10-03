@@ -42,6 +42,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.ErrorDialog
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.LoadingDialog
 import id.jostudios.penielcommunityx.presentation.extras.components.ThemedButton
+import id.jostudios.penielcommunityx.presentation.extras.components.member_form.FormTextInput
 import id.jostudios.penielcommunityx.presentation.ui.theme.PenielCommunityXTheme
 
 @AndroidEntryPoint
@@ -78,7 +79,7 @@ class MemberForm : ComponentActivity() {
                 viewModel.clearError();
             }
         }
-        if (viewModel.state.value.currentUser == null) {
+        if (viewModel.state.value.currentUser == null || viewModel.state.value.displayName == null) {
             LoadingDialog();
             return;
         }
@@ -100,133 +101,85 @@ class MemberForm : ComponentActivity() {
                     .verticalScroll(rememberScrollState())
             ) {
                 // Name
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Name", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(40.dp));
-                    Text(text = ":", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(10.dp));
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = "@${currentUser.name}",
-                        onValueChange = {},
-                        readOnly = true,
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 12.sp
-                        )
-                    );
-                }
+                FormTextInput(
+                    label = "Name",
+                    value = "@${currentUser.name}",
+                    isStatic = true,
+                    onChange = {}
+                );
 
                 Spacer(modifier = Modifier.height(10.dp));
 
                 // Display Name
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Display Name", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(40.dp));
-                    Text(text = ":", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(10.dp));
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.displayName!!,
-                        onValueChange = {
-                            viewModel.setDisplayName(it);
-                            state.displayName
-                        },
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 12.sp
-                        )
-                    );
-                }
+                FormTextInput(
+                    label = "Display Name",
+                    value = state.displayName!!,
+                    onChange = {
+                        viewModel.setDisplayName(it);
+                    }
+                );
 
                 Spacer(modifier = Modifier.height(10.dp));
 
                 // Email
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Email", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(40.dp));
-                    Text(text = ":", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(10.dp));
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.email!!,
-                        onValueChange = {
-                            viewModel.setEmail(it);
-                        },
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 12.sp
-                        )
-                    );
-                }
+                FormTextInput(
+                    label = "Email",
+                    value = state.email!!,
+                    onChange = {
+                        viewModel.setEmail(it);
+                    }
+                );
 
                 Spacer(modifier = Modifier.height(10.dp));
 
                 // Phone Number
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Phone Number", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(40.dp));
-                    Text(text = ":", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(10.dp));
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = state.phoneNumber!!,
-                        onValueChange = {
-                            viewModel.setPhoneNumber(it);
-                        },
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 12.sp
-                        )
-                    );
-                }
+                FormTextInput(
+                    label = "Phone Number",
+                    value = state.displayName!!,
+                    onChange = {
+                        viewModel.setPhoneNumber(it);
+                    }
+                );
 
                 Spacer(modifier = Modifier.height(10.dp));
 
                 // Role
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Role", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(40.dp));
-                    Text(text = ":", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(10.dp));
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = currentUser.role.name,
-                        onValueChange = {},
-                        readOnly = true,
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 12.sp
-                        )
-                    );
-                }
+                FormTextInput(
+                    label = "Role",
+                    value = currentUser.role.name,
+                    isStatic = true,
+                    onChange = {}
+                );
 
                 Spacer(modifier = Modifier.height(10.dp));
 
                 // Birth Date
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val datePickerState = rememberDatePickerState();
-                    datePickerState.selectedDateMillis = currentUser.birthDate;
-                    datePickerState.displayMode = DisplayMode.Input;
+                    val datePickerState = rememberDatePickerState(state.birthDate);
 
-                    Text(text = "Birth Date", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(40.dp));
-                    Text(text = ":", fontSize = 16.sp);
-                    Spacer(modifier = Modifier.width(10.dp));
-                    DatePicker(state = datePickerState);
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        datePickerState.displayMode = DisplayMode.Input;
+
+                        Text(text = "Birth Date", fontSize = 16.sp);
+                        Spacer(modifier = Modifier.width(40.dp));
+                        Text(text = ":", fontSize = 16.sp);
+                        Spacer(modifier = Modifier.width(10.dp));
+                        DatePicker(state = datePickerState);
+                        Spacer(modifier = Modifier.width(10.dp));
+                    }
+
+                    ThemedButton(
+                        text = "Pick Date",
+                        onClick = {
+                            viewModel.setBirthDate(datePickerState.selectedDateMillis!!);
+                        }
+                    );
+
                 }
 
                 Spacer(modifier = Modifier.height(10.dp));

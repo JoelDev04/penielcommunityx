@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.jostudios.penielcommunityx.common.States
+import id.jostudios.penielcommunityx.domain.model.UserModel
 import id.jostudios.penielcommunityx.domain.repository.DatabaseRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,6 +26,25 @@ class MemberFormViewModel @Inject constructor(
         try {
             viewModelScope.launch {
                 _uid = uid;
+
+                if (_uid == "") {
+                    // Initialize empty from
+
+                    _state.value = _state.value.copy(
+                        currentUser = UserModel(
+                            id = "",
+                            name = "",
+                            displayName = ""
+                        )
+                    );
+
+                    setDisplayName("");
+                    setEmail("");
+                    setPhoneNumber("");
+                    setBirthDate(0);
+
+                    return@launch;
+                }
 
                 if (States.currentUser.value?.id == uid) {
                     Log.d("MemberForm", "Loading Current User!");
@@ -45,6 +65,11 @@ class MemberFormViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         currentUser = user
                     );
+
+                    setDisplayName(_state.value.currentUser?.displayName!!);
+                    setEmail(_state.value.currentUser?.email!!);
+                    setPhoneNumber(_state.value.currentUser?.phoneNumber!!);
+                    setBirthDate(_state.value.currentUser?.birthDate!!);
                 }
             }
         } catch (e: Exception) {

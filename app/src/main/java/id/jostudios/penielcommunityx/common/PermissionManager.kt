@@ -35,7 +35,8 @@ object PermissionManager {
 
     fun decryptPermission(): Int {
         if (States.permissions.value == null) {
-            throw Exception("State permission is null!");
+            //throw Exception("State permission is null!");
+            return 0;
         }
 
         val decrypted = Crypto.Decrypt(States.permissions.value!!);

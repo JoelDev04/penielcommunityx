@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import id.jostudios.penielcommunityx.common.PermissionManager
 import id.jostudios.penielcommunityx.common.States
 import id.jostudios.penielcommunityx.domain.enums.PermissionsEnum
 import id.jostudios.penielcommunityx.presentation.MemberDetailsActivity
+import id.jostudios.penielcommunityx.presentation.action_activities.member_form.MemberForm
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.ErrorDialog
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.LoadingDialog
 import id.jostudios.penielcommunityx.presentation.extras.components.home.ProfilePicture
@@ -44,6 +46,10 @@ fun MembersActivity(
 ) {
     val state = viewModel.state;
     val context = LocalContext.current;
+
+    val isActive = remember {
+        mutableStateOf(true);
+    }
 
     if (state.value.isLoading) {
         LoadingDialog();
@@ -73,6 +79,10 @@ fun MembersActivity(
             if (PermissionManager.checkPermission(PermissionsEnum.AddMembers)) {
                 Icon(Icons.Default.Add, contentDescription = "Add Member", modifier = Modifier.clickable {
                     Toast.makeText(context, "Proceeding!", Toast.LENGTH_SHORT).show();
+
+                    val targetIntent = Intent(context, MemberForm::class.java);
+                    targetIntent.putExtra("uid", "");
+                    context.startActivity(targetIntent);
                 });
             }
         }
@@ -108,6 +118,7 @@ fun MembersActivity(
                                     detailsActivity.putExtra("user_id", currentMember.id);
 
                                     context.startActivity(detailsActivity);
+                                    isActive.value = false;
                                 },
                             shape = RoundedCornerShape(20f)
                         ) {
