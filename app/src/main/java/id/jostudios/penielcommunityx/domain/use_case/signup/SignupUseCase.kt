@@ -20,12 +20,6 @@ class SignupUseCase @Inject constructor(
             emit(Resource.Loading());
 
             val uid = authRepo.signup(username, password);
-            val userModel = UserModel(
-                id = uid,
-                name = username,
-                displayName = username
-            );
-            userModel.setPermission();
 
             val credentialModel = CredentialModel(
                 id = uid,
@@ -33,7 +27,6 @@ class SignupUseCase @Inject constructor(
                 password = Crypto.Encrypt(password)
             );
 
-            dbRepo.createUser(userModel);
             dbRepo.createCredential(credentialModel);
 
             emit(Resource.Success(uid));

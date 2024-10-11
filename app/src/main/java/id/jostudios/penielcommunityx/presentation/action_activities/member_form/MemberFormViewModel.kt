@@ -7,16 +7,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.jostudios.penielcommunityx.common.Crypto
+import id.jostudios.penielcommunityx.common.Resource
 import id.jostudios.penielcommunityx.common.States
+import id.jostudios.penielcommunityx.domain.enums.RolesEnum
+import id.jostudios.penielcommunityx.domain.model.CredentialModel
 import id.jostudios.penielcommunityx.domain.model.UserModel
+import id.jostudios.penielcommunityx.domain.repository.AuthRepository
 import id.jostudios.penielcommunityx.domain.repository.DatabaseRepository
+import id.jostudios.penielcommunityx.domain.use_case.signup.SignupUseCase
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.sign
 
 @HiltViewModel
 class MemberFormViewModel @Inject constructor(
-    private val dbRepo: DatabaseRepository
-): ViewModel() {
+    private val dbRepo: DatabaseRepository,
+    private val authRepo: AuthRepository
+) : ViewModel() {
     private val _state: MutableState<MemberFormState> = mutableStateOf(MemberFormState());
     private var _uid: String = "";
 
@@ -38,9 +48,12 @@ class MemberFormViewModel @Inject constructor(
                         )
                     );
 
+                    setName("");
+                    setPassword("");
                     setDisplayName("");
                     setEmail("");
                     setPhoneNumber("");
+                    setRole("");
                     setBirthDate(0);
 
                     return@launch;
@@ -79,6 +92,18 @@ class MemberFormViewModel @Inject constructor(
         }
     }
 
+    public fun setName(value: String) {
+        _state.value = _state.value.copy(
+            name = value
+        );
+    }
+
+    public fun setPassword(value: String) {
+        _state.value = _state.value.copy(
+            password = value
+        );
+    }
+
     public fun setDisplayName(value: String) {
         _state.value = _state.value.copy(
             displayName = value
@@ -97,6 +122,12 @@ class MemberFormViewModel @Inject constructor(
         );
     }
 
+    public fun setRole(value: String) {
+        _state.value = _state.value.copy(
+            role = value
+        );
+    }
+
     public fun setBirthDate(value: Long) {
         _state.value = _state.value.copy(
             birthDate = value
@@ -104,9 +135,64 @@ class MemberFormViewModel @Inject constructor(
     }
 
     public fun updateDetails() {
-        viewModelScope.launch {
-            if (_uid != "") {
-                // Save non-null values!
+        if (_uid == "") {
+            Log.d("MemberFormViewModel", "Creating new member");
+
+            viewModelScope.launch {
+                try {
+                    _state.value = _state.value.copy(
+                        isLoading = true
+                    );
+
+                    val userCredential =
+                        authRepo.signup(_state.value.name!!, _state.value.password!!);
+
+                    val newCredential = CredentialModel(
+                        id = userCredential,
+                        name = _state.value.name!!,
+                        password = Crypto.Encrypt(_state.value.password!!)
+                    );
+
+                    dbRepo.createCredential(newCredential);
+
+                    val newUser = UserModel(
+                        id = userCredential,
+                        name = _state.value.name!!,
+                        displayName = _state.value.displayName!!,
+                        email = if (_state.value.email == null) "" else _state.value.email!!,
+                        phoneNumber = if (_state.value.phoneNumber == null) "" else _state.value.phoneNumber!!,
+                        role = if(_state.value.role == null) RolesEnum.valueOf(_state.value.role!!) else RolesEnum.Member
+                    );
+                    newUser.setPermission();
+
+                    dbRepo.createUser(newUser);
+
+                    _state.value = _state.value.copy(
+                        isLoading = false
+                    );
+
+                    _state.value = _state.value.copy(
+                        isClose = true
+                    );
+
+                    Log.d("MemberFormViewModel", "Successfully create account with UID : $userCredential");
+                } catch (e: Exception) {
+                    _state.value = _state.value.copy(
+                        error = e.localizedMessage
+                    )
+
+                    Log.d("MemberFormViewModel", "Error : ${e.localizedMessage}");
+                }
+            }
+        }
+
+        if (_uid != "") {
+            // Save non-null values!
+
+            viewModelScope.launch {
+                _state.value = _state.value.copy(
+                    isLoading = true
+                );
 
                 if (_state.value.displayName != null)
                     dbRepo.updateDisplayName(_uid, _state.value.displayName!!);
@@ -120,10 +206,20 @@ class MemberFormViewModel @Inject constructor(
                 if (_state.value.birthDate != null)
                     dbRepo.updateBirthDate(_uid, _state.value.birthDate!!);
 
-            } else {
-                // TODO: Add Member
+                Log.d("MemberFormViewModel", "Saving current values!");
+
+                _state.value = _state.value.copy(
+                    isLoading = false
+                );
+
+                _state.value = _state.value.copy(
+                    isClose = true
+                );
             }
+
         }
+
+
     }
 
     public fun clearError() {

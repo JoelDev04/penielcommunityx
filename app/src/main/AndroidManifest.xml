@@ -32,6 +32,11 @@
         android:theme="@style/Theme.PenielCommunityX"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.action_activities.change_avatar.ChangeAvatar"
+            android:exported="false"
+            android:label="@string/title_activity_change_avatar"
+            android:theme="@style/Theme.PenielCommunityX" />
+        <activity
             android:name=".presentation.action_activities.member_form.MemberForm"
             android:exported="false"
             android:label="@string/title_activity_member_form"

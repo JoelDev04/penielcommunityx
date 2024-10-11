@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import id.jostudios.penielcommunityx.common.States
+import id.jostudios.penielcommunityx.presentation.action_activities.change_avatar.ChangeAvatar
 import id.jostudios.penielcommunityx.presentation.action_activities.member_form.MemberForm
 import id.jostudios.penielcommunityx.presentation.extras.components.settings.SettingGroupSeparator
 import id.jostudios.penielcommunityx.presentation.extras.components.settings.SettingsButton
@@ -38,6 +39,7 @@ fun SettingScreen() {
 
         SettingGroupSeparator(name = "Profiles");
         SettingsButton(text = "Edit Profile", MemberForm::class.java, editProfileExtras);
+        SettingsButton(text = "Change Avatar", ChangeAvatar::class.java);
         SettingsButton(text = "Group Display");
         SettingsButton(text = "Check Permission");
 

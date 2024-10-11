@@ -1,6 +1,7 @@
 package id.jostudios.penielcommunityx.presentation.action_activities.member_form
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,12 +50,12 @@ import id.jostudios.penielcommunityx.presentation.ui.theme.PenielCommunityXTheme
 class MemberForm : ComponentActivity() {
 
     private val viewModel: MemberFormViewModel by viewModels();
+    private var uid: String? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val uid = intent.getStringExtra("uid");
-
+        uid = intent.getStringExtra("uid");
         viewModel.loadUser(uid!!);
 
         setContent {
@@ -79,6 +80,12 @@ class MemberForm : ComponentActivity() {
                 viewModel.clearError();
             }
         }
+        if (state.isLoading) {
+            LoadingDialog();
+        }
+        if (state.isClose) {
+            finish();
+        }
         if (viewModel.state.value.currentUser == null || viewModel.state.value.displayName == null) {
             LoadingDialog();
             return;
@@ -101,12 +108,39 @@ class MemberForm : ComponentActivity() {
                     .verticalScroll(rememberScrollState())
             ) {
                 // Name
-                FormTextInput(
-                    label = "Name",
-                    value = "@${currentUser.name}",
-                    isStatic = true,
-                    onChange = {}
-                );
+                if (uid == null || uid == "") {
+                    Log.d("MemberForm", "Add member mode!");
+                    FormTextInput(
+                        label = "Name",
+                        value = state.name!!,
+                        isStatic = false,
+                        onChange = {
+                            viewModel.setName(it)
+                        }
+                    );
+                } else {
+                    FormTextInput(
+                        label = "Name",
+                        value = "@${currentUser.name}",
+                        isStatic = true,
+                        onChange = {}
+                    );
+                }
+
+                Spacer(modifier = Modifier.height(10.dp));
+
+                // Password
+                if (uid == null || uid == "") {
+                    Log.d("MemberForm", "Add member mode!");
+                    FormTextInput(
+                        label = "Password",
+                        value = state.password!!,
+                        isStatic = false,
+                        onChange = {
+                            viewModel.setPassword(it)
+                        }
+                    );
+                }
 
                 Spacer(modifier = Modifier.height(10.dp));
 
@@ -135,7 +169,7 @@ class MemberForm : ComponentActivity() {
                 // Phone Number
                 FormTextInput(
                     label = "Phone Number",
-                    value = state.displayName!!,
+                    value = state.phoneNumber!!,
                     onChange = {
                         viewModel.setPhoneNumber(it);
                     }
@@ -144,12 +178,24 @@ class MemberForm : ComponentActivity() {
                 Spacer(modifier = Modifier.height(10.dp));
 
                 // Role
-                FormTextInput(
-                    label = "Role",
-                    value = currentUser.role.name,
-                    isStatic = true,
-                    onChange = {}
-                );
+                if (uid == null || uid == "") {
+                    Log.d("MemberForm", "Add member mode!");
+                    FormTextInput(
+                        label = "Role",
+                        value = state.role!!,
+                        isStatic = false,
+                        onChange = {
+                            viewModel.setRole(it);
+                        }
+                    );
+                } else {
+                    FormTextInput(
+                        label = "Role",
+                        value = currentUser.role.name,
+                        isStatic = true,
+                        onChange = {}
+                    );
+                }
 
                 Spacer(modifier = Modifier.height(10.dp));
 
@@ -166,7 +212,7 @@ class MemberForm : ComponentActivity() {
                         datePickerState.displayMode = DisplayMode.Input;
 
                         Text(text = "Birth Date", fontSize = 16.sp);
-                        Spacer(modifier = Modifier.width(40.dp));
+                        Spacer(modifier = Modifier.width(10.dp));
                         Text(text = ":", fontSize = 16.sp);
                         Spacer(modifier = Modifier.width(10.dp));
                         DatePicker(state = datePickerState);
@@ -174,8 +220,9 @@ class MemberForm : ComponentActivity() {
                     }
 
                     ThemedButton(
-                        text = "Pick Date",
+                        text = "Save Date",
                         onClick = {
+                            Toast.makeText(context, "Date saved!", Toast.LENGTH_SHORT).show();
                             viewModel.setBirthDate(datePickerState.selectedDateMillis!!);
                         }
                     );
