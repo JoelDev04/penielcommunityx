@@ -26,9 +26,8 @@ class StorageRepositoryImpl @Inject constructor(
         return storageAPI.fetchImage("/profiles/$imageName");
     }
 
-    override suspend fun postProfilePicture(imgUri: Uri): Uri? {
-        var file = imgUri.toFile();
-        return storageAPI.uploadImage("/profiles", file.name.toString(), imgUri);
+    override suspend fun postProfilePicture(imgUri: Uri, imgName: String): Uri? {
+        return storageAPI.uploadImage("/profiles", imgName, imgUri);
     }
 
     override suspend fun getBanner(imageName: String): Uri? {

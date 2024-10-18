@@ -9,7 +9,7 @@ interface StorageRepository {
 
     suspend fun getProfilePicture(imageName: String): Uri?
 
-    suspend fun postProfilePicture(imgUri: Uri): Uri?
+    suspend fun postProfilePicture(imgUri: Uri, imgName: String): Uri?
 
     suspend fun getBanner(imageName: String): Uri?
 }

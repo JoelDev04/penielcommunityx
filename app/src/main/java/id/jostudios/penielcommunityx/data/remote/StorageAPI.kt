@@ -18,8 +18,7 @@ class StorageAPI {
     }
 
     public suspend fun uploadImage(child: String, imgName: String, imgUri: Uri): Uri? {
-        val date = Date();
-        val upPath = storage.child("$child/content_${imgName}");
+        val upPath = storage.child("$child/${imgName}");
         val upTask = upPath.putFile(imgUri).await();
         val path = upTask.storage.downloadUrl.await();
 

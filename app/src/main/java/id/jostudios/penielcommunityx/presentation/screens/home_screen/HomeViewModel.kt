@@ -193,6 +193,7 @@ class HomeViewModel @Inject constructor(
             }
 
             override fun onUserProfileChanged(data: String) {
+                Log.d("HomeViewModel", "Data : $data");
                 States.currentUser.value = States.currentUser.value?.copy(
                     profilePicture = data
                 );

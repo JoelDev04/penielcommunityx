@@ -2,6 +2,7 @@ package id.jostudios.penielcommunityx.presentation.extras.components.home
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,7 +36,10 @@ fun ActionButton(
             .width(width)
             .height(height),
         onClick = {
-            if (intentClass == null) { return@Button }
+            if (intentClass == null) {
+                Toast.makeText(context, "Fitur belum tersedia!", Toast.LENGTH_SHORT).show();
+                return@Button
+            }
 
             val intent = Intent(context, intentClass);
             context.startActivity(intent);

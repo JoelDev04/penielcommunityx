@@ -6,7 +6,9 @@ import id.jostudios.penielcommunityx.domain.model.UserModel
 import com.google.gson.reflect.TypeToken
 import id.jostudios.penielcommunityx.domain.enums.GroupsEnum
 import id.jostudios.penielcommunityx.domain.enums.RolesEnum
+import id.jostudios.penielcommunityx.domain.model.DiakoniaModel
 import id.jostudios.penielcommunityx.domain.repository.DatabaseRepository
+import id.jostudios.penielcommunityx.presentation.activities.diakonia.Diakonia
 import java.util.Dictionary
 import javax.inject.Inject
 
@@ -21,12 +23,24 @@ class DatabaseRepositoryImpl @Inject constructor(
         dbAPI.write("credentials/${credentialModel.id}", credentialModel);
     }
 
+    override suspend fun createDiakonia(id: String) {
+        dbAPI.write("diakonia/members/${id}", listOf(DiakoniaModel()));
+    }
+
     override suspend fun getUsers(): List<UserModel> {
         val raw = dbAPI.read("users");
         val obj = dbAPI.gson.fromJson<Map<String, UserModel>>(raw, object: TypeToken<Map<String, UserModel>>(){}.type);
         val memberList = obj.values.toList();
 
         return memberList;
+    }
+
+    override suspend fun getDiakoniaMembers(): Map<String, List<DiakoniaModel>> {
+        val raw = dbAPI.read("diakonia/members");
+        val obj = dbAPI.gson.fromJson<Map<String,  List<DiakoniaModel>>>(raw, object:
+            TypeToken<Map<String,  List<DiakoniaModel>>>(){}.type
+        );
+        return obj;
     }
 
     override suspend fun getUserById(id: String): UserModel {
@@ -46,6 +60,10 @@ class DatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun updateUserById(id: String, userModel: UserModel) {
         dbAPI.database.child("users/${id}").setValue(userModel);
+    }
+
+    override suspend fun updateDiakonia(id: String, diakoniaModel: DiakoniaModel) {
+        dbAPI.database.child("diakonia/members/${id}").setValue(diakoniaModel);
     }
 
     override suspend fun updatePermission(id: String, permission: String) {

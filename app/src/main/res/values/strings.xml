@@ -4,4 +4,5 @@
     <string name="title_activity_cheat">CheatActivity</string>
     <string name="title_activity_member_form">MemberForm</string>
     <string name="title_activity_change_avatar">ChangeAvatar</string>
+    <string name="title_activity_diakonia">Diakonia</string>
 </resources>

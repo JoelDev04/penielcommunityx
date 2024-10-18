@@ -40,6 +40,7 @@ import id.jostudios.penielcommunityx.common.States
 import id.jostudios.penielcommunityx.presentation.CheatActivity
 import id.jostudios.penielcommunityx.presentation.MainActivity
 import id.jostudios.penielcommunityx.presentation.MembersActivity
+import id.jostudios.penielcommunityx.presentation.activities.diakonia.Diakonia
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.ErrorDialog
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.LoadingDialog
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.ProfilePictureDialog
@@ -153,7 +154,7 @@ fun HomeScreen(
                 buttons = listOf(
                     ActionButtonModel(LocalContext.current, "Members", MembersActivity::class.java),
                     ActionButtonModel(LocalContext.current, "Pembangunan", null),
-                    ActionButtonModel(LocalContext.current, "Diakonia", null),
+                    ActionButtonModel(LocalContext.current, "Diakonia", Diakonia::class.java),
                     ActionButtonModel(LocalContext.current, "Warta Jemaat", null),
                     ActionButtonModel(LocalContext.current, "Pelayan", null),
                     ActionButtonModel(LocalContext.current, "Renungan", null),
@@ -168,7 +169,7 @@ fun HomeScreen(
                 buttons = listOf(
                     ActionButtonModel(LocalContext.current, "Members", MembersActivity::class.java),
                     ActionButtonModel(LocalContext.current, "Pembangunan", null),
-                    ActionButtonModel(LocalContext.current, "Diakonia", null),
+                    ActionButtonModel(LocalContext.current, "Diakonia", Diakonia::class.java),
                     ActionButtonModel(LocalContext.current, "Warta Jemaat", null),
                     ActionButtonModel(LocalContext.current, "Pelayan", null),
                     ActionButtonModel(LocalContext.current, "Renungan", null),
