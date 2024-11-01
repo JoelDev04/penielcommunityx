@@ -32,6 +32,11 @@
         android:theme="@style/Theme.PenielCommunityX"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.action_activities.diakonia_form.DiakoniaForm"
+            android:exported="false"
+            android:label="@string/title_activity_add_diakonia"
+            android:theme="@style/Theme.PenielCommunityX" />
+        <activity
             android:name=".presentation.activities.diakonia.Diakonia"
             android:exported="false"
             android:label="@string/title_activity_diakonia"

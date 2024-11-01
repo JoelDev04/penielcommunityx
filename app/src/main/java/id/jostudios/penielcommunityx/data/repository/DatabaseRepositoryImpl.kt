@@ -24,7 +24,7 @@ class DatabaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createDiakonia(id: String) {
-        dbAPI.write("diakonia/members/${id}", listOf(DiakoniaModel()));
+        dbAPI.write("diakonia/${id}", listOf(DiakoniaModel()));
     }
 
     override suspend fun getUsers(): List<UserModel> {
@@ -35,10 +35,20 @@ class DatabaseRepositoryImpl @Inject constructor(
         return memberList;
     }
 
+    override suspend fun getNameByID(id: String): String {
+        val raw = dbAPI.read("users/$id/name");
+        return raw;
+    }
+
+    override suspend fun getUserIDByName(name: String): String {
+        val raw = dbAPI.read("users");
+        return raw;
+    }
+
     override suspend fun getDiakoniaMembers(): Map<String, List<DiakoniaModel>> {
-        val raw = dbAPI.read("diakonia/members");
-        val obj = dbAPI.gson.fromJson<Map<String,  List<DiakoniaModel>>>(raw, object:
-            TypeToken<Map<String,  List<DiakoniaModel>>>(){}.type
+        val raw = dbAPI.read("diakonia");
+        val obj = dbAPI.gson.fromJson<Map<String, List<DiakoniaModel>>>(raw, object:
+            TypeToken<Map<String, List<DiakoniaModel>>>(){}.type
         );
         return obj;
     }
@@ -62,8 +72,8 @@ class DatabaseRepositoryImpl @Inject constructor(
         dbAPI.database.child("users/${id}").setValue(userModel);
     }
 
-    override suspend fun updateDiakonia(id: String, diakoniaModel: DiakoniaModel) {
-        dbAPI.database.child("diakonia/members/${id}").setValue(diakoniaModel);
+    override suspend fun updateDiakonia(id: String, index: Int, transaction: DiakoniaModel) {
+        dbAPI.database.child("diakonia/$id/$index").setValue(transaction);
     }
 
     override suspend fun updatePermission(id: String, permission: String) {

@@ -20,6 +20,10 @@ interface DatabaseRepository {
     // Read Operations \\
     suspend fun getUsers(): List<UserModel>;
 
+    suspend fun getUserIDByName(name: String): String;
+
+    suspend fun getNameByID(id: String): String;
+
     suspend fun getDiakoniaMembers(): Map<String, List<DiakoniaModel>>;
 
     suspend fun getUserById(id: String): UserModel;
@@ -34,7 +38,7 @@ interface DatabaseRepository {
 
     suspend fun updatePermission(id: String, permission: String);
 
-    suspend fun updateDiakonia(id: String, transaction: DiakoniaModel);
+    suspend fun updateDiakonia(id: String, index: Int, transaction: DiakoniaModel);
 
     suspend fun updateDisplayName(id: String, name: String);
 

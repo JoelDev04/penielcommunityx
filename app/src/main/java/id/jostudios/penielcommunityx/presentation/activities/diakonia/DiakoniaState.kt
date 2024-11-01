@@ -5,5 +5,5 @@ import id.jostudios.penielcommunityx.domain.model.DiakoniaModel
 data class DiakoniaState(
     var isLoading: Boolean = false,
     var error: String? = null,
-    var diakoniaMembers: DiakoniaModel? = null
+    var diakoniaMembers: Map<String, List<DiakoniaModel>>? = null
 );

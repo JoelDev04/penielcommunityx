@@ -1,6 +1,5 @@
-package id.jostudios.penielcommunityx.presentation.activities.diakonia
+package id.jostudios.penielcommunityx.presentation.action_activities.diakonia_form
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -17,11 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,24 +27,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
 import id.jostudios.penielcommunityx.common.PermissionManager
+import id.jostudios.penielcommunityx.common.TextFormat
 import id.jostudios.penielcommunityx.domain.enums.PermissionsEnum
-import id.jostudios.penielcommunityx.presentation.action_activities.diakonia_form.DiakoniaForm
-import id.jostudios.penielcommunityx.presentation.action_activities.member_form.MemberForm
 import id.jostudios.penielcommunityx.presentation.extras.Dialog.LoadingDialog
-import id.jostudios.penielcommunityx.presentation.extras.components.diakonia.DiakoniaMember
-import id.jostudios.penielcommunityx.presentation.extras.components.diakonia.LazyDiakoniaColumn
+import id.jostudios.penielcommunityx.presentation.extras.components.ThemedButton
+import id.jostudios.penielcommunityx.presentation.extras.components.member_form.FormTextInput
 import id.jostudios.penielcommunityx.presentation.ui.theme.PenielCommunityXTheme
-import kotlinx.coroutines.coroutineScope
 
 @AndroidEntryPoint
-class Diakonia : ComponentActivity() {
-
-    private val viewModel: DiakoniaViewModel by viewModels();
+class DiakoniaForm : ComponentActivity() {
+    private val viewModel: DiakoniaFormViewModel by viewModels();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +49,7 @@ class Diakonia : ComponentActivity() {
             PenielCommunityXTheme(
                 window = window
             ) {
-                Application();
+                Application()
             }
         }
     }
@@ -65,12 +59,12 @@ class Diakonia : ComponentActivity() {
         val context = LocalContext.current;
         val state = viewModel.state;
 
-        LaunchedEffect(true) {
-            viewModel.loadDiakonia();
-        }
-
         if (state.value.isLoading) {
             LoadingDialog();
+        }
+
+        LaunchedEffect(true) {
+            viewModel.fetchUserList();
         }
 
         Column(modifier = Modifier
@@ -83,26 +77,45 @@ class Diakonia : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Diakonia", fontWeight = FontWeight.SemiBold, fontSize = 28.sp);
-
-                if (PermissionManager.checkPermission(PermissionsEnum.EditDiakonia)) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Diakonia", modifier = Modifier.clickable {
-                            Toast.makeText(context, "Proceeding!", Toast.LENGTH_SHORT).show();
-
-                            val formIntent = Intent(context, DiakoniaForm::class.java);
-                            startActivity(formIntent);
-                    });
-                }
+                Text(text = "Diakonia Form", fontWeight = FontWeight.SemiBold, fontSize = 28.sp);
             }
             Spacer(modifier = Modifier.height(20.dp));
 
-            //Text(text = "Data : ${state.value.diakoniaMembers?.keys}");
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
+                FormTextInput(
+                    label = "Username",
+                    value = if (state.value.username == null) "" else state.value.username.toString(),
+                    onChange = {
+                        viewModel.setId(it);
+                    }
+                )
 
-            val map = state.value.diakoniaMembers;
+                Spacer(modifier = Modifier.height(10.dp));
 
-            if (map != null) {
-                LazyDiakoniaColumn(map, viewModel);
+                FormTextInput(
+                    label = "Amount Paid",
+                    value = if (state.value.amountPaid == null) "" else state.value.amountPaid!!,
+                    onChange = {
+                        viewModel.setAmountPaid(it);
+                    }
+                )
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ThemedButton(
+                text = "Save",
+                onClick = {
+                    Toast.makeText(context, "Saving payment!", Toast.LENGTH_LONG).show();
+                    viewModel.saveDiakonia();
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
     }
 }
