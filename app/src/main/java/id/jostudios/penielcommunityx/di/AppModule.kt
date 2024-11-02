@@ -1,10 +1,13 @@
 package id.jostudios.penielcommunityx.di
 
+import android.content.Context
 import com.google.android.gms.auth.api.signin.internal.Storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import id.jostudios.penielcommunityx.data.cache.Database.UserCacheDatabase
+import id.jostudios.penielcommunityx.data.cache.dao.UserCacheDao
 import id.jostudios.penielcommunityx.data.remote.AuthAPI
 import id.jostudios.penielcommunityx.data.remote.DatabaseAPI
 import id.jostudios.penielcommunityx.data.remote.StorageAPI
@@ -21,6 +24,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @Provides
+    @Singleton
+    fun provideUserCacheDB(context: Context): UserCacheDatabase {
+        return UserCacheDatabase.getDatabase(context);
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserCacheDao(cacheDB: UserCacheDatabase): UserCacheDao {
+        return cacheDB.userCacheDao();
+    }
+
     @Provides
     @Singleton
     fun provideAuthAPI(): AuthAPI {
