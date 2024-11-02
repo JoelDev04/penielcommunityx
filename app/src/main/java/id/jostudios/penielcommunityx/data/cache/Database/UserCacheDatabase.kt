@@ -9,7 +9,8 @@ import id.jostudios.penielcommunityx.data.cache.model.UserCacheModel
 
 @Database(
     entities = [UserCacheModel::class],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 abstract class UserCacheDatabase: RoomDatabase() {
     abstract fun userCacheDao(): UserCacheDao;
@@ -19,15 +20,15 @@ abstract class UserCacheDatabase: RoomDatabase() {
         private var INSTANCE: UserCacheDatabase? = null
 
         fun getDatabase(context: Context): UserCacheDatabase {
-            if (INSTANCE == null) {
-                val instance = Room.databaseBuilder(context, UserCacheDatabase::class.java, "UserCacheDB").build();
-
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    UserCacheDatabase::class.java,
+                    "UserCacheDB"
+                ).fallbackToDestructiveMigration().build();
                 INSTANCE = instance;
-
-                return instance;
+                instance;
             }
-
-            return INSTANCE!!;
         }
     }
 }

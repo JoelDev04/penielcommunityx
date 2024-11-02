@@ -5,18 +5,25 @@ import com.google.android.gms.auth.api.signin.internal.Storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import id.jostudios.penielcommunityx.data.cache.Database.CacheControlDatabase
 import id.jostudios.penielcommunityx.data.cache.Database.UserCacheDatabase
+import id.jostudios.penielcommunityx.data.cache.dao.CacheControlDao
 import id.jostudios.penielcommunityx.data.cache.dao.UserCacheDao
 import id.jostudios.penielcommunityx.data.remote.AuthAPI
 import id.jostudios.penielcommunityx.data.remote.DatabaseAPI
 import id.jostudios.penielcommunityx.data.remote.StorageAPI
 import id.jostudios.penielcommunityx.data.repository.AuthRepositoryImpl
+import id.jostudios.penielcommunityx.data.repository.CacheControlRepositoryImpl
 import id.jostudios.penielcommunityx.data.repository.DatabaseRepositoryImpl
 import id.jostudios.penielcommunityx.data.repository.StorageRepositoryImpl
+import id.jostudios.penielcommunityx.data.repository.UserCacheRepositoryImpl
 import id.jostudios.penielcommunityx.domain.repository.AuthRepository
+import id.jostudios.penielcommunityx.domain.repository.CacheControlRepository
 import id.jostudios.penielcommunityx.domain.repository.DatabaseRepository
 import id.jostudios.penielcommunityx.domain.repository.StorageRepository
+import id.jostudios.penielcommunityx.domain.repository.UserCacheRepository
 import id.jostudios.penielcommunityx.domain.use_case.login.LoginUseCase
 import id.jostudios.penielcommunityx.domain.use_case.signup.SignupUseCase
 import javax.inject.Singleton
@@ -24,9 +31,28 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
     @Provides
     @Singleton
-    fun provideUserCacheDB(context: Context): UserCacheDatabase {
+    fun provideCacheControlDatabase(@ApplicationContext context: Context): CacheControlDatabase {
+        return CacheControlDatabase.getDatabase(context);
+    }
+
+    @Provides
+    @Singleton
+    fun provideCacheControlDao(cacheControlDatabase: CacheControlDatabase): CacheControlDao {
+        return cacheControlDatabase.cacheControlDao();
+    }
+
+    @Provides
+    @Singleton
+    fun provideCacheControlRepository(cacheControlDao: CacheControlDao): CacheControlRepository {
+        return CacheControlRepositoryImpl(cacheControlDao);
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserCacheDB(@ApplicationContext context: Context): UserCacheDatabase {
         return UserCacheDatabase.getDatabase(context);
     }
 
@@ -34,6 +60,12 @@ object AppModule {
     @Singleton
     fun provideUserCacheDao(cacheDB: UserCacheDatabase): UserCacheDao {
         return cacheDB.userCacheDao();
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserCacheRepository(userCacheDao: UserCacheDao): UserCacheRepository {
+        return UserCacheRepositoryImpl(userCacheDao);
     }
 
     @Provides

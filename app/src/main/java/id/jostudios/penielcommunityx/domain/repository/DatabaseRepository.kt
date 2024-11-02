@@ -9,6 +9,10 @@ import id.jostudios.penielcommunityx.presentation.activities.diakonia.Diakonia
 
 interface DatabaseRepository {
 
+    suspend fun getLastUsersUpdate(): Long;
+
+    suspend fun updateLastUsersUpdate(datetime: Long);
+
     // Create Operations \\
     suspend fun createUser(userModel: UserModel);
 

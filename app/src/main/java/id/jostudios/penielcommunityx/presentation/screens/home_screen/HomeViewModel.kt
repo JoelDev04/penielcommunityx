@@ -8,14 +8,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.jostudios.penielcommunityx.common.CacheConverter
 import id.jostudios.penielcommunityx.common.PermissionManager
 import id.jostudios.penielcommunityx.common.Resource
 import id.jostudios.penielcommunityx.common.States
+import id.jostudios.penielcommunityx.data.cache.model.CacheControlModel
+import id.jostudios.penielcommunityx.data.cache.model.UserCacheModel
 import id.jostudios.penielcommunityx.domain.enums.GroupsEnum
 import id.jostudios.penielcommunityx.domain.listeners.interfaces.UserChangedListenter
 import id.jostudios.penielcommunityx.domain.listeners.remotes.UserChangedRemote
 import id.jostudios.penielcommunityx.domain.repository.AuthRepository
+import id.jostudios.penielcommunityx.domain.repository.CacheControlRepository
 import id.jostudios.penielcommunityx.domain.repository.DatabaseRepository
+import id.jostudios.penielcommunityx.domain.repository.UserCacheRepository
 import id.jostudios.penielcommunityx.domain.use_case.get_banner.GetBannerUseCase
 import id.jostudios.penielcommunityx.domain.use_case.get_profile_picture.GetProfilePictureUseCase
 import id.jostudios.penielcommunityx.domain.use_case.get_version.GetVersionUseCase
@@ -23,12 +28,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okhttp3.internal.notify
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dbRepo: DatabaseRepository,
     private val authRepo: AuthRepository,
+
+    private val userCacheRepo: UserCacheRepository,
+    private val cacheControlRepo: CacheControlRepository,
 
     private val dbRemoteListener: UserChangedRemote,
 
@@ -46,6 +55,23 @@ class HomeViewModel @Inject constructor(
             checkAppVersion();
             fetchUser();
             fetchBanner();
+            initializeCache()
+        }
+    }
+
+    private suspend fun initializeCache() {
+        val serverLastUsersUpdate = dbRepo.getLastUsersUpdate();
+        val lastUsersUpdate = cacheControlRepo.getValue("lastUsersUpdate")?.value?.toLong();
+
+        if (lastUsersUpdate == null) {
+            Log.d("HomeViewModel", "Cache initiated!");
+            cacheControlRepo.insert(
+                CacheControlModel(
+                    id = 1,
+                    name = "lastUsersUpdate",
+                    value = serverLastUsersUpdate.toString()
+                )
+            );
         }
     }
 
@@ -83,6 +109,8 @@ class HomeViewModel @Inject constructor(
                         isLoading = true
                     );
                 }
+
+                else -> {}
             }
         }.launchIn(viewModelScope);
     }
@@ -124,6 +152,8 @@ class HomeViewModel @Inject constructor(
                         isLoading = false
                     );
                 }
+
+                else -> {}
             }
         }.launchIn(viewModelScope);
     }
@@ -226,6 +256,8 @@ class HomeViewModel @Inject constructor(
                         profileUri = res.data
                     )
                 }
+
+                else -> {}
             }
 
         }.launchIn(viewModelScope);

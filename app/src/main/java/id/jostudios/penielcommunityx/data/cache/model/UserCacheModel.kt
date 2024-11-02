@@ -1,6 +1,7 @@
 package id.jostudios.penielcommunityx.data.cache.model
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import id.jostudios.penielcommunityx.common.CacheConverter
 import id.jostudios.penielcommunityx.domain.enums.GroupsEnum
 import id.jostudios.penielcommunityx.domain.enums.RolesEnum
@@ -9,6 +10,7 @@ import id.jostudios.penielcommunityx.domain.enums.RolesEnum
     tableName = "UserCaches",
 )
 data class UserCacheModel(
+    @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String,
     var displayName: String,

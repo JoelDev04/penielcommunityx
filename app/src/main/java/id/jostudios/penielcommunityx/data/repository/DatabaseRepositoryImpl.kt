@@ -15,6 +15,14 @@ import javax.inject.Inject
 class DatabaseRepositoryImpl @Inject constructor(
     private var dbAPI: DatabaseAPI
 ): DatabaseRepository {
+    override suspend fun getLastUsersUpdate(): Long {
+        return dbAPI.read("_public/_usersUpdate/_lastUpdate").replace("\"", "").toLong();
+    }
+
+    override suspend fun updateLastUsersUpdate(datetime: Long) {
+        dbAPI.write("_public/_usersUpdate/_lastUpdate", datetime);
+    }
+
     override suspend fun createUser(userModel: UserModel) {
         dbAPI.write("users/${userModel.id}", userModel);
     }
